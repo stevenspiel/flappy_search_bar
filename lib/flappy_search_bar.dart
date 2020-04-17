@@ -180,6 +180,9 @@ class SearchBar<T> extends StatefulWidget {
 
   /// Callback when cancel button is triggered
   final VoidCallback onCancelled;
+  
+  /// If true, the cancellation widget will always be visible
+  final bool alwaysShowCancel;
 
   /// Controller used to be able to sort, filter or replay the search
   final SearchBarController searchBarController;
@@ -234,6 +237,7 @@ class SearchBar<T> extends StatefulWidget {
     this.textStyle = const TextStyle(color: Colors.black),
     this.cancellationWidget = const Text("Cancel"),
     this.onCancelled,
+    this.alwaysShowCancel = false,
     this.suggestions = const [],
     this.buildSuggestion,
     this.searchBarStyle = const SearchBarStyle(),
@@ -387,7 +391,7 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                 Flexible(
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 200),
-                    width: _animate ? widthMax * .8 : widthMax,
+                    width: (_animate || widget.alwaysShowCancel) ? widthMax * .8 : widthMax,
                     decoration: BoxDecoration(
                       borderRadius: widget.searchBarStyle.borderRadius,
                       color: widget.searchBarStyle.backgroundColor,
@@ -416,13 +420,13 @@ class _SearchBarState<T> extends State<SearchBar<T>>
                 GestureDetector(
                   onTap: _cancel,
                   child: AnimatedOpacity(
-                    opacity: _animate ? 1.0 : 0,
+                    opacity: (_animate || widget.alwaysShowCancel) ? 1.0 : 0,
                     curve: Curves.easeIn,
                     duration: Duration(milliseconds: _animate ? 1000 : 0),
                     child: AnimatedContainer(
                       duration: Duration(milliseconds: 200),
                       width:
-                          _animate ? MediaQuery.of(context).size.width * .2 : 0,
+                          (_animate || widget.alwaysShowCancel) ? MediaQuery.of(context).size.width * .2 : 0,
                       child: Container(
                         color: Colors.transparent,
                         child: Center(
